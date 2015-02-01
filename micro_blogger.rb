@@ -1,4 +1,5 @@
 require 'jumpstart_auth'
+require 'bitly'
 
 class MicroBlogger
 	attr_reader :client
@@ -31,6 +32,7 @@ class MicroBlogger
 				when 'spam' then spam_my_followers(parts[1..-1].join(" "))
 				when 'elt' then everyones_last_tweet
 				when 's' then shorten(url)
+				when 'turl' then tweet(parts[1..-2].join(" ") + " " + shorten(parts[-1]))
 				else
 					puts "Sorry, I don't know how to #{command}" 
 			end
@@ -71,8 +73,10 @@ class MicroBlogger
 	end
 
 	def shorten(original_url)
-
+		Bitly.use_api_version_3
+		bitly = Bitly.new('hungryacademy', 'R_430e9f62250186d2612cca76eee2dbc6')
 		puts "Shortening this URL: #{original_url}"
+		bitly.shorten(original_url).short_url
 	end
 
 end
